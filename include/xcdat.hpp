@@ -65,6 +65,14 @@ template <class Trie>
     return visitor.bytes();
 }
 
+template <class Trie>
+[[maybe_unused]] std::uint64_t save(const Trie& idx, std::stringstream& ss) {
+    save_visitor visitor(&ss);
+    visitor.visit(static_cast<std::uint32_t>(Trie::type_id));  // identifier
+    visitor.visit(const_cast<Trie&>(idx));
+    return visitor.bytes();
+}
+
 //! Get the dictionary size in bytes.
 template <class Trie>
 [[maybe_unused]] std::uint64_t memory_in_bytes(const Trie& idx) {

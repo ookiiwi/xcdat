@@ -116,9 +116,11 @@ void test_enumerate(const trie_type& trie, const std::vector<std::string>& keys)
 
 void test_io(const trie_type& trie, const std::vector<std::string>& keys, const std::vector<std::string>& others) {
     const char* tmp_filepath = "tmp.idx";
+    std::stringstream ss;
 
     const std::uint64_t memory = xcdat::memory_in_bytes(trie);
     REQUIRE_EQ(memory, xcdat::save(trie, tmp_filepath));
+    REQUIRE_EQ(memory, xcdat::save(trie, ss));
 
     {
         const auto loaded = xcdat::load<trie_type>(tmp_filepath);

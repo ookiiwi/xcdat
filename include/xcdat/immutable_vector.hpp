@@ -4,6 +4,7 @@
 #include <cassert>
 #include <cstdint>
 #include <fstream>
+#include <sstream>
 #include <iterator>
 #include <memory>
 
@@ -68,6 +69,11 @@ class immutable_vector {
     void save(std::ofstream& ofs) const {
         ofs.write(reinterpret_cast<const char*>(&m_size), sizeof(m_size));
         ofs.write(reinterpret_cast<const char*>(m_data), sizeof(T) * m_size);
+    }
+
+    void save(std::stringstream& ss) const {
+        ss.write(reinterpret_cast<const char*>(&m_size), sizeof(m_size));
+        ss.write(reinterpret_cast<const char*>(m_data), sizeof(T) * m_size);
     }
 
     inline std::uint64_t memory_in_bytes() const {
