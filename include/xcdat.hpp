@@ -55,6 +55,19 @@ template <class Trie>
     return idx;
 }
 
+template <class Trie>
+[[maybe_unused]] Trie load(std::stringstream& ss) {
+    load_visitor visitor(&ss);
+
+    std::uint32_t type_id;
+    visitor.visit(type_id);
+    XCDAT_THROW_IF(type_id != Trie::type_id, "The input dictionary type is different.");
+
+    Trie idx;
+    visitor.visit(idx);
+    return idx;
+}
+
 //! Save the trie dictionary to the file and returns the file size in bytes.
 //! The identifier of the trie type will be written in the first 4 bytes.
 template <class Trie>

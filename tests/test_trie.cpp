@@ -151,6 +151,21 @@ void test_io(const trie_type& trie, const std::vector<std::string>& keys, const 
         test_basic_operations(mapped, keys, others);
     }
 
+    {
+        ss.seekg(0, std::ios::beg);
+        const auto mapped = xcdat::load<trie_type>(ss);
+        REQUIRE_EQ(trie.bin_mode(), mapped.bin_mode());
+        REQUIRE_EQ(trie.num_keys(), mapped.num_keys());
+        REQUIRE_EQ(trie.alphabet_size(), mapped.alphabet_size());
+        REQUIRE_EQ(trie.max_length(), mapped.max_length());
+        REQUIRE_EQ(trie.num_nodes(), mapped.num_nodes());
+        REQUIRE_EQ(trie.num_units(), mapped.num_units());
+        REQUIRE_EQ(trie.num_free_units(), mapped.num_free_units());
+        REQUIRE_EQ(trie.tail_length(), mapped.tail_length());
+        REQUIRE_EQ(memory, xcdat::memory_in_bytes(mapped));
+        test_basic_operations(mapped, keys, others);
+    }
+
     std::remove(tmp_filepath);
 }
 

@@ -66,6 +66,16 @@ class immutable_vector {
         }
     }
 
+    void load(std::stringstream& ss) {
+        clear();
+        ss.read(reinterpret_cast<char*>(&m_size), sizeof(m_size));
+        if (m_size != 0) {
+            m_allocator = std::make_unique<T[]>(m_size);
+            ss.read(reinterpret_cast<char*>(m_allocator.get()), sizeof(T) * m_size);
+            m_data = m_allocator.get();
+        }
+    }
+
     void save(std::ofstream& ofs) const {
         ofs.write(reinterpret_cast<const char*>(&m_size), sizeof(m_size));
         ofs.write(reinterpret_cast<const char*>(m_data), sizeof(T) * m_size);
