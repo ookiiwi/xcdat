@@ -116,11 +116,11 @@ void test_enumerate(const trie_type& trie, const std::vector<std::string>& keys)
 
 void test_io(const trie_type& trie, const std::vector<std::string>& keys, const std::vector<std::string>& others) {
     const char* tmp_filepath = "tmp.idx";
-    std::stringstream ss;
+    std::ostringstream os;
 
     const std::uint64_t memory = xcdat::memory_in_bytes(trie);
     REQUIRE_EQ(memory, xcdat::save(trie, tmp_filepath));
-    REQUIRE_EQ(memory, xcdat::save(trie, ss));
+    REQUIRE_EQ(memory, xcdat::save(trie, os));
 
     {
         const auto loaded = xcdat::load<trie_type>(tmp_filepath);
@@ -152,8 +152,9 @@ void test_io(const trie_type& trie, const std::vector<std::string>& keys, const 
     }
 
     {
-        ss.seekg(0, std::ios::beg);
-        const auto mapped = xcdat::load<trie_type>(ss);
+        std::istringstream is(os.str());
+
+        const auto mapped = xcdat::load<trie_type>(is);
         REQUIRE_EQ(trie.bin_mode(), mapped.bin_mode());
         REQUIRE_EQ(trie.num_keys(), mapped.num_keys());
         REQUIRE_EQ(trie.alphabet_size(), mapped.alphabet_size());
