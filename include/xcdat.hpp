@@ -56,8 +56,8 @@ template <class Trie>
 }
 
 template <class Trie>
-[[maybe_unused]] Trie load(std::stringstream& ss) {
-    load_visitor visitor(&ss);
+[[maybe_unused]] Trie load(std::istream& is) {
+    load_visitor visitor(is);
 
     std::uint32_t type_id;
     visitor.visit(type_id);
@@ -79,8 +79,8 @@ template <class Trie>
 }
 
 template <class Trie>
-[[maybe_unused]] std::uint64_t save(const Trie& idx, std::stringstream& ss) {
-    save_visitor visitor(&ss);
+[[maybe_unused]] std::uint64_t save(const Trie& idx, std::ostream& os) {
+    save_visitor visitor(os);
     visitor.visit(static_cast<std::uint32_t>(Trie::type_id));  // identifier
     visitor.visit(const_cast<Trie&>(idx));
     return visitor.bytes();

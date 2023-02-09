@@ -10,17 +10,15 @@ namespace xcdat {
 
 class load_visitor {
   private:
+    std::istream& m_is;
     std::ifstream m_ifs;
-    std::stringstream* m_ss;
 
   public:
-    load_visitor(const std::string& filepath) : m_ifs(filepath, std::ios::binary), m_ss(nullptr) {
+    load_visitor(const std::string& filepath) : m_is(m_ifs), m_ifs(filepath, std::ios::binary) {
         XCDAT_THROW_IF(!m_ifs.good(), "Cannot open the input file");
     }
 
-    load_visitor(std::stringstream* ss) : m_ss(ss) {
-        XCDAT_THROW_IF(!m_ss, "String stream pointer must not be null");
-    }
+    load_visitor(std::istream& ss) : m_is(ss) {}
 
     virtual ~load_visitor() {
         m_ifs.close();
@@ -28,28 +26,20 @@ class load_visitor {
 
     template <class T>
     void visit(immutable_vector<T>& vec) {
-        if (m_ss) {
-            vec.load(*m_ss);
-        } else {
-            vec.load(m_ifs);
-        }
+        vec.load(m_is);
     }
 
     template <class T>
     void visit(T& obj) {
         if constexpr (std::is_pod_v<T>) {
-            if (m_ss) {
-                m_ss->read(reinterpret_cast<char*>(&obj), sizeof(T));
-            } else {
-                m_ifs.read(reinterpret_cast<char*>(&obj), sizeof(T));
-            }
+            m_is.read(reinterpret_cast<char*>(&obj), sizeof(T));
         } else {
             obj.visit(*this);
         }
     }
 
     std::uint64_t bytes() {
-        return m_ifs.tellg();
+        return m_is.tellg();
     }
 };
 

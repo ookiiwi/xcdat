@@ -56,34 +56,19 @@ class immutable_vector {
         return sizeof(std::uint64_t) + m_size * sizeof(T);
     }
 
-    void load(std::ifstream& ifs) {
+    void load(std::istream& is) {
         clear();
-        ifs.read(reinterpret_cast<char*>(&m_size), sizeof(m_size));
+        is.read(reinterpret_cast<char*>(&m_size), sizeof(m_size));
         if (m_size != 0) {
             m_allocator = std::make_unique<T[]>(m_size);
-            ifs.read(reinterpret_cast<char*>(m_allocator.get()), sizeof(T) * m_size);
+            is.read(reinterpret_cast<char*>(m_allocator.get()), sizeof(T) * m_size);
             m_data = m_allocator.get();
         }
     }
 
-    void load(std::stringstream& ss) {
-        clear();
-        ss.read(reinterpret_cast<char*>(&m_size), sizeof(m_size));
-        if (m_size != 0) {
-            m_allocator = std::make_unique<T[]>(m_size);
-            ss.read(reinterpret_cast<char*>(m_allocator.get()), sizeof(T) * m_size);
-            m_data = m_allocator.get();
-        }
-    }
-
-    void save(std::ofstream& ofs) const {
-        ofs.write(reinterpret_cast<const char*>(&m_size), sizeof(m_size));
-        ofs.write(reinterpret_cast<const char*>(m_data), sizeof(T) * m_size);
-    }
-
-    void save(std::stringstream& ss) const {
-        ss.write(reinterpret_cast<const char*>(&m_size), sizeof(m_size));
-        ss.write(reinterpret_cast<const char*>(m_data), sizeof(T) * m_size);
+    void save(std::ostream& os) const {
+        os.write(reinterpret_cast<const char*>(&m_size), sizeof(m_size));
+        os.write(reinterpret_cast<const char*>(m_data), sizeof(T) * m_size);
     }
 
     inline std::uint64_t memory_in_bytes() const {
