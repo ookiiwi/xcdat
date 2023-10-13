@@ -97,7 +97,7 @@ template <class Trie>
 
 //! Get the identifier of the trie type embedded by the function 'save'.
 //! The identifier corresponds to trie::type_id and will be used to detect the trie type.
-[[maybe_unused]] std::uint32_t get_type_id(const std::string& filepath) {
+[[maybe_unused]] inline std::uint32_t get_type_id(const std::string& filepath) {
     std::ifstream ifs(filepath);
     XCDAT_THROW_IF(!ifs.good(), "Cannot open the input file");
 
